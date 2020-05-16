@@ -135,6 +135,7 @@ int main(int argc, char** argv)
 
     // Quantidade total de sementes mestre = 2% da (largura * altura)
     int total_semente = (width*height)*0.02;
+    printf("Total %d\n", total_semente);
     // Vetor de sementes mestre
     Seed semente[total_semente];
 
@@ -153,12 +154,33 @@ int main(int argc, char** argv)
     // Sugestão: 1) ordenar a Semente por x,y, pois quando percorrer a matriz para procurar a semente,
     // podemos controlar quando o x e y forem muito distantes e parar, lembrando que eles são int e
 
+    // Arquivo desordenado
+    FILE *fp;
+    fp = fopen("./desord.txt","w+");
     // Imprime o tamanho da imagem no console
-    printf("%d %d\n", width, height);
+    //printf("%d %d\n", width, height);
+    fprintf(fp,"%d %d\n", width, height);
     // Gerar no console as sementes matrizes
     for(int i=0; i<total_semente; i++){
-        printf("%.4f %.4f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
+        //printf("%.4f %.4f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
+        fprintf(fp,"%.4f %.4f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
     }
+    fclose(fp);
+
+    // QuickXYSort para ordenar a semente
+    quickXYSort(semente, 0, total_semente-1);
+
+    // Arquivo ordenado
+    fp = fopen("./ord.txt","w+");
+    // Imprime o tamanho da imagem no console
+    //printf("%d %d\n", width, height);
+    fprintf(fp,"%d %d\n", width, height);
+    // Gerar no console as sementes matrizes
+    for(int i=0; i<total_semente; i++){
+        //printf("%.4f %.4f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
+        fprintf(fp,"%.4f %.4f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
+    }
+    fclose(fp);
 
     // Aqui termina nossa alteração da função main
     // =======================================================================
@@ -219,4 +241,41 @@ void draw()
 
     // Exibe a imagem
     glutSwapBuffers();
+}
+
+void quickXYSort(Seed *matriz, int inicio, int termino) {
+    //printf("Qin %d, Qout %d\n", inicio, termino);
+    int pivo;
+    if(termino > inicio) {
+        pivo = particionaXY(matriz, inicio, termino);
+        //printf("Pivo %d\n",pivo);
+        quickXYSort(matriz, inicio, pivo-1);
+        quickXYSort(matriz, pivo+1, termino);
+    }
+}
+
+int particionaXY(Seed *matriz, int ini, int fim) {
+    int esq, dir;
+    Seed ponto, aux;
+    esq = ini;
+    dir = fim;
+    ponto = matriz[ini];
+    printf("%d %d %d %d %d\n", ponto.x, ponto.y, ponto.color.r, ponto.color.g, ponto.color.b);
+    while(esq < dir) {
+        while((matriz[esq].x < ponto.x) || ((matriz[esq].x == ponto.x) && (matriz[esq].y <= ponto.y))) {
+            esq++;
+        }
+        while((matriz[dir].x > ponto.x) || ((matriz[dir].x == ponto.x) && (matriz[dir].y > ponto.y))) {
+            dir--;
+        }
+        if(esq < dir) {
+            aux = matriz[esq];
+            //printf("%d %d %d %d %d\n", aux.x, aux.y, aux.color.r, aux.color.g, aux.color.b);
+            matriz[esq] = matriz[dir];
+            matriz[dir] = aux;
+        }
+    }
+    matriz[ini] = matriz[dir];
+    matriz[dir] = ponto;
+    return dir;
 }
