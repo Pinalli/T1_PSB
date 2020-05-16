@@ -32,7 +32,6 @@ typedef struct {
     Pixel* img;
 } Img;
 
-
 // Uma semente de Pixel
 typedef struct {
     int x, y;
@@ -127,11 +126,11 @@ int main(int argc, char** argv)
 	// ...
 	// ...
     // Exemplo: copia apenas o componente vermelho para a saida
-  //  for(int y=0; y<height; y++)
-  //      for(int x=0; x<width; x++)
-   //         out[y][x].r = in[y][x].r;
+    //for(int y=0; y<height; y++)
+    //    for(int x=0; x<width; x++)
+    //        out[y][x].r = in[y][x].r;
 
-            // ====================================================================
+    // ====================================================================
     // Aqui começa as alterações do nosso trabalho na função main
 
     // Quantidade total de sementes mestre = 2% da (largura * altura)
@@ -158,13 +157,11 @@ int main(int argc, char** argv)
     printf("%d %d\n", width, height);
     // Gerar no console as sementes matrizes
     for(int i=0; i<total_semente; i++){
-        printf("%.2f %.2f %d %d %d\n",
-               ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
+        printf("%.4f %.4f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
     }
 
     // Aqui termina nossa alteração da função main
-    //
-
+    // =======================================================================
 
 	// Cria texturas em memória a partir dos pixels das imagens
     tex[0] = SOIL_create_OGL_texture((unsigned char*) pic[0].img, width, height, SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
