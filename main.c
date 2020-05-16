@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>		// Para usar strings
+#include <time.h> // Para utilizar a hora do sistema
 
 #ifdef WIN32
 #include <windows.h>    // Apenas para Windows
@@ -30,6 +31,12 @@ typedef struct {
     int width, height;
     Pixel* img;
 } Img;
+
+// Uma semente de Pixel
+typedef struct {
+    int x, y;
+    Pixel color;
+} Seed;
 
 // Protótipos
 void load(char* name, Img* pic);
@@ -119,9 +126,42 @@ int main(int argc, char** argv)
 	// ...
 	// ...
     // Exemplo: copia apenas o componente vermelho para a saida
-    for(int y=0; y<height; y++)
-        for(int x=0; x<width; x++)
-            out[y][x].r = in[y][x].r;
+    //for(int y=0; y<height; y++)
+    //    for(int x=0; x<width; x++)
+    //        out[y][x].r = in[y][x].r;
+
+    // ====================================================================
+    // Aqui começa as alterações do nosso trabalho na função main
+
+    // Quantidade total de sementes mestre = 2% da (largura * altura)
+    int total_semente = (width*height)*0.02;
+    // Vetor de sementes mestre
+    Seed semente[total_semente];
+
+    // Inicializar carga aleatoria
+    srand(time(NULL));
+    // For de seleção de sementes mestre
+    for(int i=0; i<total_semente; i++){
+        semente[i].x = rand() % width;
+        semente[i].y = rand() % height;
+        semente[i].color = in[semente[i].y][semente[i].x];
+        // Essa linha coloquei para demonstrar na imagem as sementes mestre
+        out[semente[i].y][semente[i].x] = in[semente[i].y][semente[i].x];
+    }
+
+    // Aqui vai começar o calculo de qual semente o Pixel esta mais proxima
+    // Sugestão: 1) ordenar a Semente por x,y, pois quando percorrer a matriz para procurar a semente,
+    // podemos controlar quando o x e y forem muito distantes e parar, lembrando que eles são int e
+
+    // Imprime o tamanho da imagem no console
+    printf("%d %d\n", width, height);
+    // Gerar no console as sementes matrizes
+    for(int i=0; i<total_semente; i++){
+        printf("%.4f %.4f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
+    }
+
+    // Aqui termina nossa alteração da função main
+    // =======================================================================
 
 	// Cria texturas em memória a partir dos pixels das imagens
     tex[0] = SOIL_create_OGL_texture((unsigned char*) pic[0].img, width, height, SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);

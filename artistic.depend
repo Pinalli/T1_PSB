@@ -245,3 +245,55 @@
 
 1589493579 c:\users\alberto pinalli\documents\github\t1_psb\soil.h
 
+1589586047 source:/home/vanderson/Downloads/PSB/PSB-T1/T1_PSB/lib/SOIL/image_DXT.c
+	"image_DXT.h"
+	<math.h>
+	<stdlib.h>
+	<string.h>
+	<stdio.h>
+
+1589586047 /home/vanderson/Downloads/PSB/PSB-T1/T1_PSB/lib/SOIL/image_DXT.h
+
+1589586047 source:/home/vanderson/Downloads/PSB/PSB-T1/T1_PSB/lib/SOIL/image_helper.c
+	"image_helper.h"
+	<stdlib.h>
+	<math.h>
+
+1589586047 /home/vanderson/Downloads/PSB/PSB-T1/T1_PSB/lib/SOIL/image_helper.h
+
+1589586047 source:/home/vanderson/Downloads/PSB/PSB-T1/T1_PSB/lib/SOIL/SOIL.c
+	<windows.h>
+	<wingdi.h>
+	<GL/gl.h>
+	<OpenGL/gl.h>
+	<Carbon/Carbon.h>
+	<GL/gl.h>
+	<GL/glx.h>
+	"SOIL.h"
+	"stb_image_aug.h"
+	"image_helper.h"
+	"image_DXT.h"
+	<stdlib.h>
+	<string.h>
+
+1589586047 /home/vanderson/Downloads/PSB/PSB-T1/T1_PSB/lib/SOIL/SOIL.h
+
+1589586047 /home/vanderson/Downloads/PSB/PSB-T1/T1_PSB/lib/SOIL/stb_image_aug.h
+	<stdio.h>
+
+1589586047 source:/home/vanderson/Downloads/PSB/PSB-T1/T1_PSB/lib/SOIL/stb_image_aug.c
+	"stb_image_aug.h"
+	<math.h>
+	<string.h>
+	<stdio.h>
+	<stdlib.h>
+	<memory.h>
+	<assert.h>
+	<stdarg.h>
+	"stbi_DDS_aug.h"
+	"stbi_DDS_aug_c.h"
+
+1589586047 /home/vanderson/Downloads/PSB/PSB-T1/T1_PSB/lib/SOIL/stbi_DDS_aug.h
+
+1589586047 /home/vanderson/Downloads/PSB/PSB-T1/T1_PSB/lib/SOIL/stbi_DDS_aug_c.h
+
