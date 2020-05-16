@@ -154,10 +154,12 @@ int main(int argc, char** argv)
     // podemos controlar quando o x e y forem muito distantes e parar, lembrando que eles são int e
 
     // Imprime o tamanho da imagem no console
-    printf("%d %d\n", width, height);
+    printf("%d %d\n
+           ", width, height);
+
     // Gerar no console as sementes matrizes
     for(int i=0; i<total_semente; i++){
-        printf("%.4f %.4f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
+        printf("%.2f %.2f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
     }
 
     // Aqui termina nossa alteração da função main
