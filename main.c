@@ -133,9 +133,13 @@ int main(int argc, char** argv)
     // ====================================================================
     // Aqui começa as alterações do nosso trabalho na função main
 
+    // Setar r null
+    for(int i=0; i<width; i++)
+        for(int j=0; j<height; j++)
+            out[j][i].r = NULL;
+
     // Quantidade total de sementes mestre = 2% da (largura * altura)
     int total_semente = (width*height)*0.02;
-    printf("Total %d\n", total_semente);
     // Vetor de sementes mestre
     Seed semente[total_semente];
 
@@ -158,11 +162,9 @@ int main(int argc, char** argv)
     FILE *fp;
     fp = fopen("./desord.txt","w+");
     // Imprime o tamanho da imagem no console
-    //printf("%d %d\n", width, height);
     fprintf(fp,"%d %d\n", width, height);
     // Gerar no console as sementes matrizes
     for(int i=0; i<total_semente; i++){
-        //printf("%.4f %.4f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
         fprintf(fp,"%.4f %.4f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
     }
     fclose(fp);
@@ -173,14 +175,22 @@ int main(int argc, char** argv)
     // Arquivo ordenado
     fp = fopen("./ord.txt","w+");
     // Imprime o tamanho da imagem no console
-    //printf("%d %d\n", width, height);
     fprintf(fp,"%d %d\n", width, height);
     // Gerar no console as sementes matrizes
     for(int i=0; i<total_semente; i++){
-        //printf("%.4f %.4f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
         fprintf(fp,"%.4f %.4f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
     }
     fclose(fp);
+
+    // Pintar a cor da semente mais proxima
+    int pintar;
+    for(int i=0; i<width; i++)
+        for(int j=0; j<height; j++) {
+            if(out[j][i].r == NULL) {
+                pintar = calcular(i, j, semente, total_semente);
+                out[j][i] = semente[pintar].color;
+            }
+        }
 
     // Aqui termina nossa alteração da função main
     // =======================================================================
@@ -243,24 +253,23 @@ void draw()
     glutSwapBuffers();
 }
 
+// Metodo quicksort original
 void quickXYSort(Seed *matriz, int inicio, int termino) {
-    //printf("Qin %d, Qout %d\n", inicio, termino);
     int pivo;
     if(termino > inicio) {
         pivo = particionaXY(matriz, inicio, termino);
-        //printf("Pivo %d\n",pivo);
         quickXYSort(matriz, inicio, pivo-1);
         quickXYSort(matriz, pivo+1, termino);
     }
 }
 
+// Particionar a matriz
 int particionaXY(Seed *matriz, int ini, int fim) {
     int esq, dir;
     Seed ponto, aux;
     esq = ini;
     dir = fim;
     ponto = matriz[ini];
-    printf("%d %d %d %d %d\n", ponto.x, ponto.y, ponto.color.r, ponto.color.g, ponto.color.b);
     while(esq < dir) {
         while((matriz[esq].x < ponto.x) || ((matriz[esq].x == ponto.x) && (matriz[esq].y <= ponto.y))) {
             esq++;
@@ -270,7 +279,6 @@ int particionaXY(Seed *matriz, int ini, int fim) {
         }
         if(esq < dir) {
             aux = matriz[esq];
-            //printf("%d %d %d %d %d\n", aux.x, aux.y, aux.color.r, aux.color.g, aux.color.b);
             matriz[esq] = matriz[dir];
             matriz[dir] = aux;
         }
@@ -278,4 +286,23 @@ int particionaXY(Seed *matriz, int ini, int fim) {
     matriz[ini] = matriz[dir];
     matriz[dir] = ponto;
     return dir;
+}
+
+// Função para selecionar a semente mais proxima
+int calcular(int a, int b, Seed *sem, int contador) {
+    int calculo, novocalculo, posicao;
+    calculo = width * height;
+    for(int k=0; k<contador; k++) {
+        novocalculo = distancia(a, b, sem[k].x, sem[k].y);
+        if(novocalculo < calculo) {
+            calculo = novocalculo;
+            posicao = k;
+        }
+    }
+    return posicao;
+}
+
+// Calculando a distancia entre 2 eixos
+int distancia(int x, int y, int xs, int ys) {
+    return sqrt(pow((x - xs), 2) + pow((y - ys), 2));
 }
