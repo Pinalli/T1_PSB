@@ -50,7 +50,7 @@ void keyboard(unsigned char key, int x, int y);
 int width, height;
 
 // Funções do trabalho
-Seed proximo(int a, int b, int mt[width][height], Pixel origem[width][height]);
+Seed proximo(int a, int b, int mt[width][height], Pixel origem[height][width]);
 float menor_dist(int x, int y, int xs, int ys, int *c, int *d, float calculo);
 float distancia(int x, int y, int xs, int ys);
 
@@ -58,10 +58,10 @@ float distancia(int x, int y, int xs, int ys);
 FILE *fp;
 
 // Identificadores de textura
-GLuint tex[2];
+GLuint tex[3];
 
 // As 2 imagens
-Img pic[2];
+Img pic[3];
 
 // Imagem selecionada (0,1)
 int sel;
@@ -104,6 +104,11 @@ int main(int argc, char** argv)
     pic[1].height = pic[0].height;
 	pic[1].img = calloc(pic[1].width * pic[1].height, 3); // W x H x 3 bytes (Pixel)
 
+	// A largura e altura da imagem de saída são iguais às da imagem de entrada (0)
+    pic[2].width  = pic[0].width;
+    pic[2].height = pic[0].height;
+	pic[2].img = calloc(pic[2].width * pic[2].height, 3); // W x H x 3 bytes (Pixel)
+
 	// Especifica o tamanho inicial em pixels da janela GLUT
 	glutInitWindowSize(width, height);
 
@@ -128,6 +133,7 @@ int main(int argc, char** argv)
     // Converte para interpretar como matriz
     Pixel (*in)[width] = (Pixel(*)[width]) pic[0].img;
     Pixel (*out)[width] = (Pixel(*)[width]) pic[1].img;
+    Pixel (*out2)[width] = (Pixel(*)[width]) pic[2].img;
 
 	// Aplica o algoritmo e gera a saida em out (pic[1].img)
 	// ...
@@ -140,15 +146,16 @@ int main(int argc, char** argv)
     // ====================================================================
     // Aqui começa as alterações do nosso trabalho na função main
 
+    // Quantidade total de sementes mestre = 2% da (largura * altura)
+    int total_semente = (width*height)*0.03;
+
+    // =============== Geração aleatoria ====================================
     // Matriz de posição das sementes
     int mt_sem[width][height];
     // Setar r null
     for(int i=0; i<width; i++)
         for(int j=0; j<height; j++)
             mt_sem[i][j] = 0;
-
-    // Quantidade total de sementes mestre = 2% da (largura * altura)
-    int total_semente = (width*height)*0.03;
 
     // Seleção de xis e yis
     int xis, yis;
@@ -180,6 +187,41 @@ int main(int argc, char** argv)
         }
     // Fecha o arquivo de saida
     fclose(fp);
+    // ================== Fim da geração aleatoria ===========================
+
+    // ================== Geração fixa =======================================
+    // Matriz fixa
+    int mf_sem[width][height];
+    // Contador de posição x,y
+    int contxy = 0;
+    // Intervalo entre posição
+    int intervalo = sqrt(width + height);
+    printf("intervalo %d\n", intervalo);
+    // Setar 1,0
+    for(int i=0; i<width; i++)
+        for(int j=0; j<height; j++)
+            if(contxy == 0) {
+                mf_sem[i][j] = 1;
+                contxy = intervalo;
+            } else {
+                mf_sem[i][j] = 0;
+                contxy--;
+            }
+
+    // Abrir arquivo de saida aleatoria
+    fp = fopen("./saida_fixa.txt","w+");
+    // Imprime o tamanho da imagem no console
+    fprintf(fp,"%d %d\n", width, height);
+    // Seed para preenchimento
+    Seed cores2;
+    // Carrega as cores na segunda imagem
+    for(int i=0; i<width; i++)
+        for(int j=0; j<height; j++) {
+            cores2 = proximo(i, j, mf_sem, in);
+            out2[j][i] = in[cores2.y][cores2.x];
+        }
+    // Fecha o arquivo de saida
+    fclose(fp);
 
     // Aqui termina nossa alteração da função main
     // =======================================================================
@@ -187,6 +229,7 @@ int main(int argc, char** argv)
 	// Cria texturas em memória a partir dos pixels das imagens
     tex[0] = SOIL_create_OGL_texture((unsigned char*) pic[0].img, width, height, SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
     tex[1] = SOIL_create_OGL_texture((unsigned char*) pic[1].img, width, height, SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
+    tex[2] = SOIL_create_OGL_texture((unsigned char*) pic[2].img, width, height, SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
 
 	// Entra no loop de eventos, não retorna
     glutMainLoop();
@@ -199,9 +242,10 @@ void keyboard(unsigned char key, int x, int y)
       // ESC: libera memória e finaliza
       free(pic[0].img);
       free(pic[1].img);
+      free(pic[2].img);
       exit(1);
     }
-    if(key >= '1' && key <= '2')
+    if(key >= '1' && key <= '3')
         // 1-2: seleciona a imagem correspondente (origem ou destino)
         sel = key - '1';
     glutPostRedisplay();
@@ -243,7 +287,7 @@ void draw()
 }
 
 // Função de calculo por apoximação
-Seed proximo(int a, int b, int mt[width][height], Pixel origem[width][height]) {
+Seed proximo(int a, int b, int mt[width][height], Pixel origem[height][width]) {
     // Retorno
     Seed ret;
     // Se for semente
