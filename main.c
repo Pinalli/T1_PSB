@@ -50,7 +50,7 @@ void keyboard(unsigned char key, int x, int y);
 int width, height;
 
 // Funções do trabalho
-Seed proximo(int a, int b, int mt[width][height], Pixel origem[width][height]);
+Seed proximo(int a, int b, int mt[width][height], Pixel origem[height][width]);
 float menor_dist(int x, int y, int xs, int ys, int *c, int *d, float calculo);
 float distancia(int x, int y, int xs, int ys);
 
@@ -243,7 +243,7 @@ void draw()
 }
 
 // Função de calculo por apoximação
-Seed proximo(int a, int b, int mt[width][height], Pixel origem[width][height]) {
+Seed proximo(int a, int b, int mt[width][height], Pixel origem[height][width]) {
     // Retorno
     Seed ret;
     // Se for semente
