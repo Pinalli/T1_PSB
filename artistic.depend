@@ -163,23 +163,23 @@
 
 1589493579 c:\users\alberto pinalli\pictures\software_basico\artistic\soil.h
 
-1589493579 source:c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\image_dxt.c
+1589817034 source:c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\image_dxt.c
 	"image_DXT.h"
 	<math.h>
 	<stdlib.h>
 	<string.h>
 	<stdio.h>
 
-1589493579 c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\image_dxt.h
+1589817034 c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\image_dxt.h
 
-1589493580 source:c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\image_helper.c
+1589817034 source:c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\image_helper.c
 	"image_helper.h"
 	<stdlib.h>
 	<math.h>
 
-1589493580 c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\image_helper.h
+1589817034 c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\image_helper.h
 
-1589493580 source:c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\soil.c
+1589817034 source:c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\soil.c
 	<windows.h>
 	<wingdi.h>
 	<GL/gl.h>
@@ -194,12 +194,12 @@
 	<stdlib.h>
 	<string.h>
 
-1589493580 c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\soil.h
+1589817034 c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\soil.h
 
-1589493580 c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\stb_image_aug.h
+1589817034 c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\stb_image_aug.h
 	<stdio.h>
 
-1589493580 source:c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\stb_image_aug.c
+1589817034 source:c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\stb_image_aug.c
 	"stb_image_aug.h"
 	<math.h>
 	<string.h>
@@ -211,15 +211,17 @@
 	"stbi_DDS_aug.h"
 	"stbi_DDS_aug_c.h"
 
-1589493580 c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\stbi_dds_aug.h
+1589817034 c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\stbi_dds_aug.h
 
-1589493580 c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\stbi_dds_aug_c.h
+1589817034 c:\users\alberto pinalli\documents\github\t1_psb\lib\soil\stbi_dds_aug_c.h
 
-1589493579 source:c:\users\alberto pinalli\documents\github\t1_psb\main.c
+1589926429 source:c:\users\alberto pinalli\documents\github\t1_psb\main.c
 	<stdio.h>
 	<stdlib.h>
+	<windows.h>
 	<math.h>
 	<string.h>
+	<time.h>
 	<windows.h>
 	<OpenGL/gl.h>
 	<OpenGL/glu.h>
@@ -229,21 +231,21 @@
 	<GL/glut.h>
 	"SOIL.h"
 
-1589493579 c:\users\alberto pinalli\documents\github\t1_psb\include\gl\glut.h
+1589817034 c:\users\alberto pinalli\documents\github\t1_psb\include\gl\glut.h
 	"freeglut.h"
 
-1589493579 c:\users\alberto pinalli\documents\github\t1_psb\include\gl\freeglut.h
+1589817034 c:\users\alberto pinalli\documents\github\t1_psb\include\gl\freeglut.h
 	"freeglut_std.h"
 	"freeglut_ext.h"
 
-1589493579 c:\users\alberto pinalli\documents\github\t1_psb\include\gl\freeglut_std.h
+1589817034 c:\users\alberto pinalli\documents\github\t1_psb\include\gl\freeglut_std.h
 	<windows.h>
 	<GL/gl.h>
 	<GL/glu.h>
 
-1589493579 c:\users\alberto pinalli\documents\github\t1_psb\include\gl\freeglut_ext.h
+1589817034 c:\users\alberto pinalli\documents\github\t1_psb\include\gl\freeglut_ext.h
 
-1589493579 c:\users\alberto pinalli\documents\github\t1_psb\soil.h
+1589817034 c:\users\alberto pinalli\documents\github\t1_psb\soil.h
 
 1589586047 source:/home/vanderson/Downloads/PSB/PSB-T1/T1_PSB/lib/SOIL/image_DXT.c
 	"image_DXT.h"

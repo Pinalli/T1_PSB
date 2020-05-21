@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include<windows.h>
 #include <math.h>
 #include <string.h>		// Para usar strings
 #include <time.h> // Para utilizar a hora do sistema
+//#include <GL/gl.h>
+//#include <GL/glut.h>
+//#include <iostream>
 
 #ifdef WIN32
 #include <windows.h>    // Apenas para Windows
@@ -35,7 +39,6 @@ typedef struct {
 // Uma semente de Pixel
 typedef struct {
     int x, y;
-    Pixel color;
 } Seed;
 
 // Protótipos
@@ -49,6 +52,14 @@ void keyboard(unsigned char key, int x, int y);
 
 // Largura e altura da janela
 int width, height;
+
+// Funções do trabalho
+Seed proximo(int a, int b, int mt[width][height], Pixel origem[height][width]);
+float menor_dist(int x, int y, int xs, int ys, int *c, int *d, float calculo);
+float distancia(int x, int y, int xs, int ys);
+
+// Geração de arquivo
+FILE *fp;
 
 // Identificadores de textura
 GLuint tex[2];
@@ -133,34 +144,46 @@ int main(int argc, char** argv)
     // ====================================================================
     // Aqui começa as alterações do nosso trabalho na função main
 
+    // Matriz de posição das sementes
+    int mt_sem[width][height];
+    // Setar r null
+    for(int i=0; i<width; i++)
+        for(int j=0; j<height; j++)
+            mt_sem[i][j] = 0;
+
     // Quantidade total de sementes mestre = 2% da (largura * altura)
-    int total_semente = (width*height)*0.02;
-    // Vetor de sementes mestre
-    Seed semente[total_semente];
+    int total_semente = (width*height)*0.03;
+
+    // Seleção de xis e yis
+    int xis, yis;
 
     // Inicializar carga aleatoria
     srand(time(NULL));
     // For de seleção de sementes mestre
     for(int i=0; i<total_semente; i++){
-        semente[i].x = rand() % width;
-        semente[i].y = rand() % height;
-        semente[i].color = in[semente[i].y][semente[i].x];
-        // Essa linha coloquei para demonstrar na imagem as sementes mestre
-        out[semente[i].y][semente[i].x] = in[semente[i].y][semente[i].x];
+        xis = rand() % width;
+        yis = rand() % height;
+        if(mt_sem[xis][yis] == 1) {
+            i--;
+        } else {
+            mt_sem[xis][yis] = 1;
+        }
     }
 
-    // Aqui vai começar o calculo de qual semente o Pixel esta mais proxima
-    // Sugestão: 1) ordenar a Semente por x,y, pois quando percorrer a matriz para procurar a semente,
-    // podemos controlar quando o x e y forem muito distantes e parar, lembrando que eles são int e
-
+    // Abrir arquivo de saida aleatoria
+    fp = fopen("./saida_aleatoria.txt","w+");
     // Imprime o tamanho da imagem no console
-    printf("%d %d\n
-           ", width, height);
-
-    // Gerar no console as sementes matrizes
-    for(int i=0; i<total_semente; i++){
-        printf("%.2f %.2f %d %d %d\n", ((float)semente[i].x/width), ((float)semente[i].y/height), semente[i].color.r, semente[i].color.g, semente[i].color.b);
-    }
+    fprintf(fp,"%d %d\n", width, height);
+    // Seed para preenchimento
+    Seed cores;
+    // Carrega as cores na segunda imagem
+    for(int i=0; i<width; i++)
+        for(int j=0; j<height; j++) {
+            cores = proximo(i, j, mt_sem, in);
+            out[j][i] = in[cores.y][cores.x];
+        }
+    // Fecha o arquivo de saida
+    fclose(fp);
 
     // Aqui termina nossa alteração da função main
     // =======================================================================
@@ -221,4 +244,99 @@ void draw()
 
     // Exibe a imagem
     glutSwapBuffers();
+}
+
+// Função de calculo por apoximação
+Seed proximo(int a, int b, int mt[width][height], Pixel origem[height][width]) {
+    // Retorno
+    Seed ret;
+    // Se for semente
+    if(mt[a][b] == 1) {
+        ret.x = a;
+        ret.y = b;
+        // Imprime no arquivo de saida
+        fprintf(fp,"%.4f %.4f %d %d %d\n", ((float)a/width), ((float)b/height), origem[b][a].r, origem[b][a].g, origem[b][a].b);
+    } else {
+        // Contador
+        int cont = 1;
+        // Valores de distancia
+        float calculo;
+        calculo = width * height;
+        // X e Y de saida
+        int c, d;
+        // Manipulação
+        int meio, k;
+        // Executa enquanto o calculo for maior que o contador
+        while(cont <= calculo) {
+            // Meio
+            meio = ((cont/2)+1);
+
+            // Para y (B+CONT) soma x (A-MEIO) => (A+CONT)
+            if ((a-meio) >= 0)
+                k = a-meio;
+            else
+                k = 0;
+            if ((b+cont) < height)
+                for(int l=k; ((l<=(a+cont)) && (l<width)); l++)
+                    if(mt[l][b+cont] == 1)
+                        calculo = menor_dist(a, b, l, b+cont, &c, &d, calculo);
+
+            // Para x (A-CONT) soma y (B-((CONT/2)+1)) => (B+CONT)
+            if ((b-meio) >= 0)
+                k = b-meio;
+            else
+                k = 0;
+            if ((a-cont) >= 0)
+                for(int m=k; (m<=(b+cont) && (m<height)); m++)
+                    if(mt[a-cont][m] == 1)
+                        calculo = menor_dist(a, b, a-cont, m, &c, &d, calculo);
+
+            // Para y (B-CONT) subtrai x (A-CONT) => (A+((CONT/2)+1))
+            if ((a-cont) >= 0)
+                k = a-cont;
+            else
+                k = 0;
+            if ((b-cont) >= 0)
+                for(int l=k; ((l<=(a+meio)) && (l<width)); l++)
+                    if(mt[l][b-cont] == 1)
+                        calculo = menor_dist(a, b, l, b-cont, &c, &d, calculo);
+
+            // Para x (A+CONT) subtrai y (B-CONT) => (B+((CONT/2)+1))
+            if ((b-cont) >= 0)
+                k = b-cont;
+            else
+                k = 0;
+            if ((a+cont) < width)
+                for(int m=k; ((m<=(b+meio)) && (m<height)); m++)
+                    if(mt[a+cont][m] == 1)
+                        calculo = menor_dist(a, b, a+cont, m, &c, &d, calculo);
+
+            // Incrementa o contador
+            cont++;
+        }
+        // Carrega x e y da menor distancia
+        ret.x = c;
+        ret.y = d;
+    }
+    // Retorna a semente mais proxima
+    return ret;
+}
+
+// Retorna a menor distancia
+float menor_dist(int x, int y, int xs, int ys, int *c, int *d, float calculo) {
+    float novocalculo;
+    // Calcula a distancia
+    novocalculo = distancia(x, y, xs, ys);
+    // Armazena a menor distancia
+    if(novocalculo < calculo) {
+        calculo = novocalculo;
+        *c = xs;
+        *d = ys;
+    }
+    // Retorna a menor distancia
+    return calculo;
+}
+// Calculando a distancia entre 2 eixos
+float distancia(int x, int y, int xs, int ys) {
+    return sqrt(pow((x - xs), 2) + pow((y - ys), 2));
 }
